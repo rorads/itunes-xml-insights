@@ -24,18 +24,32 @@ The system extracts data from your iTunes XML export file, transforms it into st
 
 ### Claude MCP
 
-To register the elasticsearch mcp in your claude desktop app, you can run the following.
+To register the elasticsearch mcp in your claude desktop app, you can add the following to the `claude_desktop_config.json`
 
-```sh
-roryscott@Mac itunes-xml-insights % npx -y @smithery/cli@latest install elasticsearch-mcp-server --client claude
-✔ Successfully resolved elasticsearch-mcp-server
-Installing remote server. Please ensure you trust the server author, especially when sharing sensitive data.
-For information on Smithery's data policy, please visit: https://smithery.ai/docs/data-policy
-? The host URL of the Elasticsearch cluster. (required) http://localhost:9200/
-? The password for Elasticsearch authentication. (required) <insert-password-here>
-? The username for Elasticsearch authentication. (required) elastic
-elasticsearch-mcp-server successfully installed for claude
+```json
+{
+  "mcpServers": {
+    "elasticsearch-local": {
+      "command": "/Users/roryscott/.local/bin/uvx",
+      "args": [
+        "--directory",
+        "/Users/roryscott/Code/local-MCP/elasticsearch-mcp-server-1.0.0/src/elasticsearch_mcp_server",
+        "elasticsearch-mcp-server"
+      ],
+      "env": {
+        "ELASTIC_HOST": "http://localhost:9200",
+        "ELASTIC_USERNAME": "elastic",
+        "ELASTIC_PASSWORD": "<your-password-goes-here>"
+      }
+    }
+  }
+}
 ```
+
+> [!WARNING]
+> Note that you're theoretically meant to be able to use a remote server for this, following [these instructions](https://github.com/cr7258/elasticsearch-mcp-server).
+> 
+> I sank 2.5 hours into tring to make this work and instead just downloaded [version 1.0.0](https://github.com/cr7258/elasticsearch-mcp-server/releases/tag/v1.0.0) and set up uvx to run it locally. 
 
 If you then want to access this via Claude Code, you can run the following:
 
