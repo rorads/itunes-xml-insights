@@ -6,10 +6,7 @@ Analyze your iTunes XML library data using Elasticsearch and Kibana to visualize
 
 This project provides a comprehensive analytics solution for your iTunes library data, allowing you to explore your music collection through interactive visualizations.
 
-<div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-    <img src="static/kibana-mixed.png" alt="Dashboard Overview" width="48%" />
-    <img src="static/kibana-rating-playtime.png" alt="Bars" width="48%" />
-</div>
+![static/kibana-mixed.png](static/kibana-mixed.png)
 
 The system extracts data from your iTunes XML export file, transforms it into structured indices, and presents it through customized Kibana dashboards.
 
