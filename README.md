@@ -2,6 +2,18 @@
 
 Analyze your iTunes XML library data using Elasticsearch and Kibana to visualize your music listening habits.
 
+## Overview
+
+This project provides a comprehensive analytics solution for your iTunes library data, allowing you to explore your music collection through interactive visualizations.
+
+<div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+    <img src="static/kibana-mixed.png" alt="Dashboard Overview" width="48%" />
+    <img src="static/kibana-rating-playtime.png" alt="Bars" width="48%" />
+</div>
+
+The system extracts data from your iTunes XML export file, transforms it into structured indices, and presents it through customized Kibana dashboards.
+
+
 ## Features
 
 - Parse iTunes XML library export
@@ -9,6 +21,25 @@ Analyze your iTunes XML library data using Elasticsearch and Kibana to visualize
 - Pre-aggregated artist, album, and genre data for fast analytics
 - Comprehensive Kibana dashboard with multi-level insights
 - All containerized with Docker, no local installs needed
+
+### Claude MCP
+
+To register the elasticsearch mcp in your claude desktop app, you can run the following.
+
+```sh
+roryscott@Mac itunes-xml-insights % npx -y @smithery/cli@latest install elasticsearch-mcp-server --client claude
+✔ Successfully resolved elasticsearch-mcp-server
+Installing remote server. Please ensure you trust the server author, especially when sharing sensitive data.
+For information on Smithery's data policy, please visit: https://smithery.ai/docs/data-policy
+? The host URL of the Elasticsearch cluster. (required) http://localhost:9200/
+? The password for Elasticsearch authentication. (required) <insert-password-here>
+? The username for Elasticsearch authentication. (required) elastic
+elasticsearch-mcp-server successfully installed for claude
+```
+
+If you then want to access this via Claude Code, you can run the following:
+
+![static/mcp-import-from-desktop.png](static/mcp-import-from-desktop.png)
 
 ## Prerequisites
 
