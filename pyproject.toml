@@ -8,6 +8,7 @@ dependencies = [
     "elasticsearch>=8.10.0",
     "pydantic>=2.5.0",
     "requests>=2.31.0",
+    "python-dotenv>=1.0.0",
 ]
 
 [project.optional-dependencies]

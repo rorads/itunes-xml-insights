@@ -2,6 +2,7 @@ import requests
 import json
 import time
 import logging
+import os
 from typing import Dict, Any, List
 
 # Configure logging
@@ -9,12 +10,16 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 KIBANA_URL = "http://localhost:5601"
+# Get credentials from environment variables
+# Use Kibana service account instead of elastic superuser
+KIBANA_USER = os.environ.get("KIBANA_SERVICE_USER", "kibana_service_user")
+KIBANA_PASSWORD = os.environ.get("KIBANA_SERVICE_PASSWORD", "kibana_service_password")
 
 
 def wait_for_kibana() -> None:
     """Wait for Kibana to be available."""
     logger.info("Waiting for Kibana to start...")
-    max_retries = 60  # Increased to 60 retries (5 minutes)
+    max_retries = 10  # 10 retries, so 50 seconds
     retry_interval = 5  # seconds
 
     for attempt in range(max_retries):
@@ -70,7 +75,8 @@ def create_index_patterns() -> None:
         response = requests.post(
             f"{KIBANA_URL}/api/saved_objects/index-pattern/{index}",
             headers=headers,
-            json=data
+            json=data,
+            auth=(KIBANA_USER, KIBANA_PASSWORD)  # Add authentication here
         )
         
         if response.status_code in [200, 201]:
@@ -114,7 +120,8 @@ def create_visualization(vis_id: str, title: str, vis_state: Dict[str, Any], ind
     response = requests.post(
         f"{KIBANA_URL}/api/saved_objects/visualization/{vis_id}",
         headers=headers,
-        json=data
+        json=data,
+        auth=(KIBANA_USER, KIBANA_PASSWORD)  # Add authentication here
     )
     
     if response.status_code in [200, 201]:
@@ -135,7 +142,8 @@ def create_dashboard(visualizations: List[Dict[str, str]]) -> None:
     try:
         requests.delete(
             f"{KIBANA_URL}/api/saved_objects/dashboard/itunes-analysis",
-            headers=headers
+            headers=headers,
+            auth=(KIBANA_USER, KIBANA_PASSWORD)  # Add authentication here
         )
         logger.info("Deleted existing dashboard")
     except Exception:
@@ -237,7 +245,8 @@ def create_dashboard(visualizations: List[Dict[str, str]]) -> None:
     response = requests.post(
         f"{KIBANA_URL}/api/saved_objects/dashboard/itunes-analysis",
         headers=headers,
-        json=data
+        json=data,
+        auth=(KIBANA_USER, KIBANA_PASSWORD)  # Add authentication here
     )
     
     if response.status_code in [200, 201]:
@@ -938,7 +947,7 @@ def delete_all_saved_objects() -> None:
     for dashboard_id in dashboards:
         try:
             url = f"{KIBANA_URL}/api/saved_objects/dashboard/{dashboard_id}"
-            response = requests.delete(url, headers=headers)
+            response = requests.delete(url, headers=headers, auth=(KIBANA_USER, KIBANA_PASSWORD))
             if response.status_code in [200, 204]:
                 logger.info(f"Successfully deleted dashboard {dashboard_id}")
             elif response.status_code != 404:  # Ignore 404 (not found)
@@ -950,7 +959,7 @@ def delete_all_saved_objects() -> None:
     for vis_id in visualizations:
         try:
             url = f"{KIBANA_URL}/api/saved_objects/visualization/{vis_id}"
-            response = requests.delete(url, headers=headers)
+            response = requests.delete(url, headers=headers, auth=(KIBANA_USER, KIBANA_PASSWORD))
             if response.status_code in [200, 204]:
                 logger.info(f"Successfully deleted visualization {vis_id}")
             elif response.status_code != 404:  # Ignore 404 (not found)
@@ -962,7 +971,7 @@ def delete_all_saved_objects() -> None:
     for pattern_id in index_patterns:
         try:
             url = f"{KIBANA_URL}/api/saved_objects/index-pattern/{pattern_id}"
-            response = requests.delete(url, headers=headers)
+            response = requests.delete(url, headers=headers, auth=(KIBANA_USER, KIBANA_PASSWORD))
             if response.status_code in [200, 204]:
                 logger.info(f"Successfully deleted index-pattern {pattern_id}")
             elif response.status_code != 404:  # Ignore 404 (not found)

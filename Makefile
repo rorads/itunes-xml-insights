@@ -19,8 +19,11 @@ help:
 	@echo "  make dashboard    - Set up Kibana dashboard"
 	@echo "  make restart      - Restart all containers"
 	@echo "  make logs         - Show logs for all containers"
-	@echo "  make clean        - Remove all containers, volumes, and networks"
+	@echo "  make logs-<name>  - Show logs for a specific container (e.g., logs-elasticsearch)"
+	@echo "  make clean        - Remove all containers, volumes, networks, and Kibana objects"
+	@echo "  make clean-kibana - Remove all Kibana saved objects"
 	@echo "  make status       - Show status of all containers"
+	@echo "  make reset        - Tear down everything and start from scratch"
 
 # Start all containers
 .PHONY: start
@@ -64,13 +67,22 @@ dashboard:
 	@$(COMPOSE) run --rm $(PYTHON_CONTAINER) python -c "from kibana_setup import setup_kibana; setup_kibana()"
 	@echo "Dashboard setup complete. Access at http://localhost:5601/app/dashboards#/view/itunes-analysis"
 
+# Setup service accounts
+.PHONY: setup-accounts
+setup-accounts:
+	@echo "Setting up Elasticsearch service accounts..."
+	@docker compose exec elasticsearch bash /usr/share/create_service_account.sh
+	@echo "Service accounts created!"
+
 # Complete setup
 .PHONY: setup
 setup:
 	@echo "Setting up complete system..."
 	@make start
 	@echo "Waiting for Elasticsearch and Kibana to start..."
-	@sleep 10
+	@sleep 15
+	@make setup-accounts
+	@sleep 5
 	@make import
 	@make dashboard
 	@echo "Setup complete! Access your dashboard at http://localhost:5601/app/dashboards#/view/itunes-analysis"
@@ -119,8 +131,12 @@ reset:
 	@make clean
 	@echo "Starting containers..."
 	@make start
-	@echo "Waiting for services to be healthy..."
-	@sleep 10
+	@echo "Waiting for Elasticsearch to be healthy..."
+	@sleep 15
+	@echo "Setting up service accounts..."
+	@make setup-accounts
+	@echo "Waiting for Kibana to start with service account..."
+	@sleep 30 
 	@echo "Building Python container..."
 	@make build
 	@echo "Importing data..."

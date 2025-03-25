@@ -6,6 +6,10 @@ import time
 import logging
 from collections import defaultdict
 from typing import Dict, Any, List, Set, DefaultDict
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -17,9 +21,16 @@ def connect_to_elasticsearch() -> Elasticsearch:
     max_retries = 5
     retry_interval = 10  # seconds
     
+    # Use the built-in elastic username and get password from environment
+    elastic_user = "elastic"  # This is fixed - the built-in superuser account
+    elastic_password = os.environ.get("ELASTIC_PASSWORD", "secure_password_123")
+    
     for attempt in range(max_retries):
         try:
-            es = Elasticsearch("http://localhost:9200")
+            es = Elasticsearch(
+                "http://localhost:9200",
+                basic_auth=(elastic_user, elastic_password)
+            )
             if es.ping():
                 logger.info("Connected to Elasticsearch")
                 return es
