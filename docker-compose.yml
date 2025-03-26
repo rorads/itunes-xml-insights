@@ -10,7 +10,7 @@ services:
       - "9200:9200"
     volumes:
       - es_data:/usr/share/elasticsearch/data
-      - ./create_service_account.sh:/usr/share/create_service_account.sh
+      - ./scripts/create_service_account.sh:/usr/share/create_service_account.sh
       - ./.env:/.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://elastic:${ELASTIC_PASSWORD}@localhost:9200"]

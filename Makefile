@@ -64,7 +64,7 @@ import:
 .PHONY: dashboard
 dashboard:
 	@echo "Setting up Kibana dashboard..."
-	@$(COMPOSE) run --rm $(PYTHON_CONTAINER) python -c "from kibana_setup import setup_kibana; setup_kibana()"
+	@./scripts/setup_kibana_dashboard.sh
 	@echo "Dashboard setup complete. Access at http://localhost:5601/app/dashboards#/view/itunes-analysis"
 
 # Setup service accounts
