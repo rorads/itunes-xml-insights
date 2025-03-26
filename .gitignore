@@ -21,3 +21,7 @@ es_data/
 # Local development files
 .env
 .DS_Store
+
+# Local MCP files
+mcp.json
+elasticsearch-mcp-server-1.0.0

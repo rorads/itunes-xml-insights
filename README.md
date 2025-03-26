@@ -19,39 +19,6 @@ The system extracts data from your iTunes XML export file, transforms it into st
 - Comprehensive Kibana dashboard with multi-level insights
 - All containerized with Docker, no local installs needed
 
-### Claude MCP
-
-To register the elasticsearch mcp in your claude desktop app, you can add the following to the `claude_desktop_config.json`
-
-```json
-{
-  "mcpServers": {
-    "elasticsearch-local": {
-      "command": "/Users/roryscott/.local/bin/uvx",
-      "args": [
-        "--directory",
-        "/Users/roryscott/Code/local-MCP/elasticsearch-mcp-server-1.0.0/src/elasticsearch_mcp_server",
-        "elasticsearch-mcp-server"
-      ],
-      "env": {
-        "ELASTIC_HOST": "http://localhost:9200",
-        "ELASTIC_USERNAME": "elastic",
-        "ELASTIC_PASSWORD": "<your-password-goes-here>"
-      }
-    }
-  }
-}
-```
-
-> [!WARNING]
-> Note that you're theoretically meant to be able to use a remote server for this, following [these instructions](https://github.com/cr7258/elasticsearch-mcp-server).
-> 
-> I sank 2.5 hours into tring to make this work and instead just downloaded [version 1.0.0](https://github.com/cr7258/elasticsearch-mcp-server/releases/tag/v1.0.0) and set up uvx to run it locally. 
-
-If you then want to access this via Claude Code, you can run the following:
-
-![static/mcp-import-from-desktop.png](static/mcp-import-from-desktop.png)
-
 ## Prerequisites
 
 - Docker and Docker Compose installed
@@ -71,7 +38,7 @@ If you then want to access this via Claude Code, you can run the following:
 
 3. Run the setup script:
    ```
-   ./setup.sh
+   ./scripts/setup.sh
    ```
    
    This script will:
@@ -84,6 +51,14 @@ If you then want to access this via Claude Code, you can run the following:
    ```
    http://localhost:5601/app/dashboards#/view/itunes-analysis
    ```
+
+## Claude MCP
+
+![claude-mcp-elastic](static/claude-mcp-elasticsearch-desktop.png)
+
+To register the elasticsearch mcp in your claude desktop app and copy into a claude code instance, run `sh scripts/create_local_elasticsearch_mcp.sh`.
+
+This will download a local copy of the [elasticsearch mcp server at version 1.0.0](https://github.com/cr7258/elasticsearch-mcp-server/releases/tag/v1.0.0) and generate configuration json which can be used to install your new elastic instance as a local MCP server. 
 
 ## Data Model
 
